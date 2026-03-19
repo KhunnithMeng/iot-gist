@@ -6,6 +6,15 @@ services:
       - "4200:4200"
     volumes:
       - ./:/app
+      - angular_node_modules:/app/app/node_modules
     working_dir: /app/app
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4200/ >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
     stdin_open: true
     tty: true
+
+volumes:
+  angular_node_modules:
