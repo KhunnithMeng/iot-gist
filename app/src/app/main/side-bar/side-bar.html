@@ -1,0 +1,29 @@
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">IOT-GIST</div>
+  </div>
+
+  @for (nav of navItem(); track $index) {
+    <div class="nav-section">
+      @if (nav?.section) {
+        <div class="nav-section-label">
+          {{ nav.section }}
+        </div>
+      }
+      <div class="nav-item" [routerLink]="nav.url" routerLinkActive="active">
+        {{ nav.name }}
+      </div>
+    </div>
+  }
+
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="user-avatar">AM</div>
+      <div>
+        <div class="user-name">ADMIN</div>
+        <div class="user-role">Super Admin</div>
+      </div>
+      <div class="user-more">...</div>
+    </div>
+  </div>
+</nav>
