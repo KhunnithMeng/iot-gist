@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5d804ce-65f5-493f-9daf-8ea8aceeef13" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/postcss.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/tailwind.config.js" afterDir="false" />
+    <list default="true" id="f5d804ce-65f5-493f-9daf-8ea8aceeef13" name="Changes" comment="Integrate tailwind css 3 into existing angular 20">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/app/pages/dashboard/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/app/pages/dashboard/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/styles.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +72,15 @@
       <updated>1773816007896</updated>
       <workItem from="1773816008992" duration="4733000" />
     </task>
+    <task id="LOCAL-00001" summary="Integrate tailwind css 3 into existing angular 20">
+      <option name="closed" value="true" />
+      <created>1773893646445</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1773893646445</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -91,5 +96,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Integrate tailwind css 3 into existing angular 20" />
+    <option name="LAST_COMMIT_MESSAGE" value="Integrate tailwind css 3 into existing angular 20" />
   </component>
 </project>
