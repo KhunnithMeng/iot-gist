@@ -3,15 +3,13 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy only package files first (for caching)
-COPY package*.json ./
+COPY app/package*.json ./
 
 # Install dependencies once
 RUN npm ci
 
 # Copy rest of the app
-COPY . .
-
-WORKDIR /app/app
+COPY app/ .
 
 ENV CI=true
 ENV NG_CLI_ANALYTICS=false
