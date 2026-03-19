@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'assets/styles/app';
+
 :root {
     --bg: #080c12;
     --surface: #0d1420;
@@ -23,8 +25,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-
-@import 'assets/styles/app.scss';
 
 @tailwind base;
 @tailwind components;
