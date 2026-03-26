@@ -1,34 +1,25 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { MapService } from '../../../../services/map-service';
+import { Component, OnInit } from '@angular/core';
+import { Map } from '../map/map';
+import { DeviceService } from '../../../../services/device.service';
+import { Device } from '../../../../models/device.model';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
+  imports: [
+    Map
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   standalone: true
 })
-export class Dashboard implements AfterViewInit, OnDestroy {
-
-  constructor(private mapService: MapService) {}
-
-  ngAfterViewInit(): void {
-    this.mapService.initMap('map');
-
-    // Example data (replace with API later)
-    const mockData = this.generateMockData(2000);
-    this.mapService.renderMarkers(mockData);
+export class Dashboard implements OnInit {
+  devices: Device[] = [];
+  constructor(private deviceService: DeviceService) {
   }
 
-  ngOnDestroy(): void {
-    this.mapService.destroyMap();
-  }
-
-  private generateMockData(count: number) {
-    return Array.from({ length: count }).map(() => ({
-      lat: 11 + Math.random(),
-      lng: 104 + Math.random(),
-      type: 'vessel'
-    }));
+  ngOnInit() {
+    this.deviceService.getDevices().subscribe(res => {
+      this.devices = res;
+    })
   }
 }
