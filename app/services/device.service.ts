@@ -13,14 +13,16 @@ export class DeviceService {
     const minLng = 102.3;
     const maxLng = 107.6;
 
-    const randomData: Device[] = new Array(2000).fill({}).reduce((total, current) => {
+    const randomData: Device[] = new Array(2000).fill({}).reduce((total, current, currentIndex) => {
       const randomLat: number = minLat + (maxLat - minLat) * Math.random();
       const randomLng: number = minLng + (maxLng - minLng) * Math.random();
       const types: string[] = ['bus', 'vessel', 'car'];
       total.push({
+        id: `device-${currentIndex + 1}`,
         position: [randomLng, randomLat],
         name: 'unknown',
-        type: types[Math.floor(Math.random() * types.length)]
+        type: types[Math.floor(Math.random() * types.length)],
+        path: []
       });
       return total;
     }, []);
