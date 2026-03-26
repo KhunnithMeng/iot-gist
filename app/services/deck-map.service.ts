@@ -10,7 +10,7 @@ import { MapboxOverlay } from '@deck.gl/mapbox';
 export class DeckMapService {
   private mapboxOverlay!: MapboxOverlay;
   private map!: maplibregl.Map;
-  private viewData: { [key: string]: any }[] = [];
+  private markers: { [key: string]: any }[] = [];
 
   /**
    * Required to initial map by given HTML Div Container accessed from HTML DOM Reference
@@ -35,7 +35,7 @@ export class DeckMapService {
    * @param data
    */
   public updateData(data: { [key: string]: any }[]) {
-    this.viewData = data;
+    this.markers = data;
     if (this.mapboxOverlay) {
       this.mapboxOverlay.setProps({
         layers: this.buildLayers()
@@ -56,7 +56,7 @@ export class DeckMapService {
     return [
       new IconLayer({
         id: 'devices',
-        data: this.viewData,
+        data: this.markers,
 
         getIcon: (d) => ({
           url: MAP_ICONS[d.type],
