@@ -9,6 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { DeckMapService } from '../../../../services/deck-map.service';
+import { DeckMapData } from '../../../../models/deck-map-data';
 
 @Component({
   selector: 'app-map',
@@ -20,7 +21,7 @@ import { DeckMapService } from '../../../../services/deck-map.service';
 export class Map implements AfterViewInit, OnChanges,OnDestroy {
   @ViewChild('mapContainerRef', { static: true }) mapContainerRef!: ElementRef<HTMLDivElement>;
 
-  @Input() data: { [key: string]: any; }[] = []
+  @Input() data: DeckMapData[] = []
 
   constructor(private mapService: DeckMapService) {
   }
