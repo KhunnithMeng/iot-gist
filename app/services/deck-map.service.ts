@@ -32,6 +32,14 @@ export class DeckMapService {
     this.map.addControl(this.mapboxOverlay);
   }
 
+  public getMap() {
+    return this.map;
+  }
+
+  public getLayer(layerId: string) {
+    return this.layers.get(layerId);
+  }
+
   public addLayer(layer: any) {
     this.layers.set(layer.id, layer);
     this.render();
