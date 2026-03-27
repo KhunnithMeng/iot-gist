@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IconLayer } from '@deck.gl/layers';
 import maplibregl from 'maplibre-gl';
-import { MAP_ICONS } from '../src/app/pages/map/map-icons';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 
 @Injectable({
@@ -10,7 +8,8 @@ import { MapboxOverlay } from '@deck.gl/mapbox';
 export class DeckMapService {
   private mapboxOverlay!: MapboxOverlay;
   private map!: maplibregl.Map;
-  private markers: { [key: string]: any }[] = [];
+
+  private layers: Map<string, any> = new Map<string, any>();
 
   /**
    * Required to initial map by given HTML Div Container accessed from HTML DOM Reference
@@ -21,65 +20,50 @@ export class DeckMapService {
     this.map = new maplibregl.Map({
       container: mapContainer,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-      center: [104.9282, 11.5564], // [lng, lat]
+      center: [ 104.9282, 11.5564 ], // [lng, lat]
       zoom: 7
     });
 
-    this.map.on('load', () => {
-      this.initializeDeckOverlay()
-    })
-  }
-
-  /**
-   * Update map marker icon data by given data as a array object
-   * @param data
-   */
-  public updateData(data: { [key: string]: any }[]) {
-    this.markers = data;
-    if (this.mapboxOverlay) {
-      this.mapboxOverlay.setProps({
-        layers: this.buildLayers()
-      })
-    }
-  }
-
-  private initializeDeckOverlay() {
     this.mapboxOverlay = new MapboxOverlay({
       interleaved: false,
-      layers: this.buildLayers()
+      layers: []
     });
 
     this.map.addControl(this.mapboxOverlay);
   }
 
-  private buildLayers() {
-    return [
-      new IconLayer({
-        id: 'devices',
-        data: this.markers,
+  public getMap() {
+    return this.map;
+  }
 
-        getIcon: (d) => ({
-          url: MAP_ICONS[d.type],
-          width: 20,
-          height: 20,
-          anchorY: 20
-        }),
+  public getLayer(layerId: string) {
+    return this.layers.get(layerId);
+  }
 
-        getPosition: (d) => d.position,
-        getSize: 20,
-        pickable: true,
+  public addLayer(layer: any) {
+    this.layers.set(layer.id, layer);
+    this.render();
+  }
 
-        onClick: ({ object }) => {
-          console.log("HELLO GIRL ", object);
-        },
-        onHover: ({ object }) => {
-          this.map.getCanvas().style.cursor = object ? 'pointer' : 'default';
-        }
-      })
-    ]
+  public updateLayer(layer: any) {
+    this.layers.set(layer.id, layer);
+    this.render();
+  }
+
+  public removeLayer(layerId: string) {
+    this.layers.delete(layerId);
+    this.render();
+  }
+
+  private render() {
+    this.mapboxOverlay.setProps({
+      interleaved: false,
+      layers: [ ...this.layers.values() ]
+    })
   }
 
   close() {
+    this.layers.clear();
     this.map?.removeControl(this.mapboxOverlay);
     this.map?.remove();
   }
