@@ -13,10 +13,10 @@ import { Device } from '../../../../models/device.model';
   selector: 'app-map',
   imports: [],
   standalone: true,
-  templateUrl: './map.html',
-  styleUrl: './map.scss',
+  templateUrl: './device-map.html',
+  styleUrl: './device-map.scss',
 })
-export class Map implements AfterViewInit, OnDestroy {
+export class DeviceMap implements AfterViewInit, OnDestroy {
   @ViewChild('mapContainerRef', { static: true }) mapContainerRef!: ElementRef<HTMLDivElement>
 
   constructor(private mapService: DeviceMapService,

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { Map } from '../map/map';
+import { DeviceMap } from '../map/device-map';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
-    Map
+    DeviceMap
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
