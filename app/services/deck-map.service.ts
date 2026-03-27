@@ -48,8 +48,7 @@ export class DeckMapService {
   }
 
   private render() {
-    console.log([...this.layers.values()]);
-    this.mapboxOverlay?.setProps({
+    this.mapboxOverlay.setProps({
       interleaved: false,
       layers: [ ...this.layers.values() ]
     })
