@@ -2,14 +2,12 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Input,
-  OnChanges,
   OnDestroy,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { DeckMapService } from '../../../../services/deck-map.service';
-import { DeckMapData } from '../../../../models/deck-map-data';
+import { DeviceMapService } from './device-map.service';
+import { DeviceService } from '../../../../services/device.service';
+import { Device } from '../../../../models/device.model';
 
 @Component({
   selector: 'app-map',
@@ -18,23 +16,21 @@ import { DeckMapData } from '../../../../models/deck-map-data';
   templateUrl: './map.html',
   styleUrl: './map.scss',
 })
-export class Map implements AfterViewInit, OnChanges,OnDestroy {
-  @ViewChild('mapContainerRef', { static: true }) mapContainerRef!: ElementRef<HTMLDivElement>;
+export class Map implements AfterViewInit, OnDestroy {
+  @ViewChild('mapContainerRef', { static: true }) mapContainerRef!: ElementRef<HTMLDivElement>
 
-  @Input() data: DeckMapData[] = []
-
-  constructor(private mapService: DeckMapService) {
+  constructor(private mapService: DeviceMapService,
+              private deviceService: DeviceService) {
   }
 
   ngAfterViewInit(): void {
-    this.mapService.init(this.mapContainerRef.nativeElement);
-  }
-
-  ngOnChanges(): void {
-    this.mapService.updateData(this.data)
+    this.mapService.initializeMap(this.mapContainerRef.nativeElement);
+    this.deviceService.getDevices().subscribe((devices: Device[]) => {
+      this.mapService.updateDevice(devices);
+    })
   }
 
   ngOnDestroy() {
-    this.mapService.close();
+    this.mapService.clear();
   }
 }
