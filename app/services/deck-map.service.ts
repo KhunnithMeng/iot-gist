@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { IconLayer } from '@deck.gl/layers';
+import { IconLayer, PathLayer } from '@deck.gl/layers';
 import maplibregl from 'maplibre-gl';
 import { MAP_ICONS } from '../src/app/pages/map/map-icons';
 import { MapboxOverlay } from '@deck.gl/mapbox';
+import { DeckMapData } from '../models/deck-map-data';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { MapboxOverlay } from '@deck.gl/mapbox';
 export class DeckMapService {
   private mapboxOverlay!: MapboxOverlay;
   private map!: maplibregl.Map;
-  private markers: { [key: string]: any }[] = [];
+  private markers: DeckMapData[] = [];
 
   /**
    * Required to initial map by given HTML Div Container accessed from HTML DOM Reference
@@ -34,7 +35,7 @@ export class DeckMapService {
    * Update map marker icon data by given data as a array object
    * @param data
    */
-  public updateData(data: { [key: string]: any }[]) {
+  public updateData(data: DeckMapData[]) {
     this.markers = data;
     if (this.mapboxOverlay) {
       this.mapboxOverlay.setProps({
@@ -60,12 +61,12 @@ export class DeckMapService {
 
         getIcon: (d) => ({
           url: MAP_ICONS[d.type],
-          width: 20,
-          height: 20,
-          anchorY: 20
+          width: 64,
+          height: 64,
+          anchorY: 32
         }),
 
-        getPosition: (d) => d.position,
+        getPosition: (d: DeckMapData) => d.position,
         getSize: 20,
         pickable: true,
 
@@ -75,6 +76,16 @@ export class DeckMapService {
         onHover: ({ object }) => {
           this.map.getCanvas().style.cursor = object ? 'pointer' : 'default';
         }
+      }),
+      new PathLayer({
+        id: 'device-path',
+        data: this.markers,
+        getPath: (d: DeckMapData) => d.path,
+        getColor: [255, 50, 50, 200],
+        getWidth: 20,
+        widthMinPixels: 2,
+        capRounded: true,
+        jointRounded: true
       })
     ]
   }
