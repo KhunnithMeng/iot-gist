@@ -2,11 +2,18 @@ import { Injectable } from '@angular/core';
 import { IconLayer, PathLayer } from '@deck.gl/layers';
 import { MAP_ICONS } from '../src/app/pages/map/map-icons';
 import { DeckMapData } from '../models/deck-map-data';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeckMapLayerService {
+
+  private iconClick: Subject<DeckMapData> = new Subject<DeckMapData>();
+  public clickIcon$: Observable<DeckMapData> = this.iconClick.asObservable();
+
+  private iconHover: Subject<DeckMapData> = new Subject<DeckMapData>();
+  public hoverIcon$: Observable<DeckMapData> = this.iconHover.asObservable();
 
   /**
    * Create icon layer with configuration for handling markers
@@ -27,12 +34,8 @@ export class DeckMapLayerService {
       getSize: 20,
       pickable: true,
 
-      onClick: ({ object }) => {
-        console.log("On Click", object);
-      },
-      onHover: ({ object }) => {
-        console.log("On Hover ", object);
-      }
+      onClick: ({ object }) => this.iconClick.next(object),
+      onHover: ({ object }) => this.iconHover.next(object)
     })
   }
 
