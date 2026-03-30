@@ -4,11 +4,13 @@ import { DeckMapLayerService } from '../../../../services/deck-map-layer.service
 import { DeckMapData } from '../../../../models/deck-map-data';
 import { Device } from '../../../../models/device.model';
 import { PathLayer } from '@deck.gl/layers';
+import { Subject, takeUntil } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeviceMapService {
+  private subscriptionSignal: Subject<void> = new Subject();
 
   constructor(private deckMapService: DeckMapService,
               private deckMapLayerService: DeckMapLayerService) {}
@@ -20,8 +22,12 @@ export class DeviceMapService {
   }
 
   private handlingMapEvent() {
-    this.deckMapLayerService.clickIcon$.subscribe(this.handleClickOnIcon.bind(this));
-    this.deckMapLayerService.hoverIcon$.subscribe(this.handleHoverCursorOnIcon.bind(this));
+    this.deckMapLayerService.clickIcon$
+      .pipe(takeUntil(this.subscriptionSignal))
+      .subscribe(this.handleClickOnIcon.bind(this));
+    this.deckMapLayerService.hoverIcon$
+      .pipe(takeUntil(this.subscriptionSignal))
+      .subscribe(this.handleHoverCursorOnIcon.bind(this));
   }
 
   private handleClickOnIcon(data: DeckMapData) {
@@ -68,6 +74,7 @@ export class DeviceMapService {
 
   public clear() {
     this.deckMapService.close();
+    this.subscriptionSignal.unsubscribe();
   }
 
 }
