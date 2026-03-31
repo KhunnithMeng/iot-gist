@@ -5,6 +5,7 @@ import { DeckMapData } from '../../../../models/deck-map-data';
 import { Device } from '../../../../models/device.model';
 import { PathLayer } from '@deck.gl/layers';
 import { Subject, takeUntil } from 'rxjs';
+import { DeviceInteractionService } from '../../../../services/device-interaction.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ export class DeviceMapService {
   private subscriptionSignal: Subject<void> = new Subject();
 
   constructor(private deckMapService: DeckMapService,
+              private deviceInteractionService: DeviceInteractionService,
               private deckMapLayerService: DeckMapLayerService) {}
 
   public initializeMap(mapContainer: HTMLDivElement) {
@@ -24,27 +26,12 @@ export class DeviceMapService {
   private handlingMapEvent() {
     this.deckMapLayerService.clickIcon$
       .pipe(takeUntil(this.subscriptionSignal))
-      .subscribe(this.handleClickOnIcon.bind(this));
+      .subscribe(
+        data => this.deviceInteractionService.clickDevice(data));
     this.deckMapLayerService.hoverIcon$
       .pipe(takeUntil(this.subscriptionSignal))
-      .subscribe(this.handleHoverCursorOnIcon.bind(this));
-  }
-
-  private handleClickOnIcon(data: DeckMapData) {
-    const previousPathLayer: PathLayer = this.deckMapService.getLayer('path-layer');
-    const previousSelectedData = previousPathLayer.props.data as DeckMapData[];
-    let pathLayer: PathLayer;
-    if (previousSelectedData?.length > 0 && previousSelectedData[0].id === data.id) {
-      pathLayer = this.deckMapLayerService.createPathLayer();
-    } else {
-      pathLayer = this.deckMapLayerService.createPathLayer([ data ]);
-    }
-    this.deckMapService.updateLayer(pathLayer);
-  }
-
-  private handleHoverCursorOnIcon(data: DeckMapData) {
-    const map = this.deckMapService.getMap();
-    map.getCanvas().style.cursor = data ? 'pointer' : 'default';
+      .subscribe(
+        data => this.deviceInteractionService.hoverDevice(data));
   }
 
   private initializeMapLayer() {
