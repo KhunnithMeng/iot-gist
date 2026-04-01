@@ -9,6 +9,7 @@ import { DeviceMapService } from './device-map.service';
 import { DeviceService } from '../../../../services/device.service';
 import { Device } from '../../../../models/device.model';
 import { DeviceInfoSidebar } from '../device-info-sidebar/device-info-sidebar';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -22,18 +23,23 @@ import { DeviceInfoSidebar } from '../device-info-sidebar/device-info-sidebar';
 export class DeviceMap implements AfterViewInit, OnDestroy {
   @ViewChild('mapContainerRef', { static: true }) mapContainerRef!: ElementRef<HTMLDivElement>
 
+  subscription!: Subscription;
+
   constructor(private mapService: DeviceMapService,
               private deviceService: DeviceService) {
   }
 
   ngAfterViewInit(): void {
     this.mapService.initializeMap(this.mapContainerRef.nativeElement);
-    this.deviceService.getDevices().subscribe((devices: Device[]) => {
-      this.mapService.updateDevice(devices);
-    })
+    this.subscription = interval(5000).subscribe(res => {
+      this.deviceService.getDevices().subscribe((devices: Device[]) => {
+        this.mapService.updateDevice(devices);
+      })
+    });
   }
 
   ngOnDestroy() {
     this.mapService.clear();
+    this.subscription?.unsubscribe();
   }
 }
