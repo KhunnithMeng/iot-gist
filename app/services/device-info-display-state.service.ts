@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { DeckMapData } from '../models/deck-map-data';
 import { DeckMapIcon } from '../models/deck-map';
 import { Device } from '../models/device.model';
 
