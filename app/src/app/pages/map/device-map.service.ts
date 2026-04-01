@@ -3,7 +3,6 @@ import { DeckMapService } from '../../../../services/deck-map.service';
 import { DeckMapLayerService } from '../../../../services/deck-map-layer.service';
 import { DeckMapData } from '../../../../models/deck-map-data';
 import { Device } from '../../../../models/device.model';
-import { PathLayer } from '@deck.gl/layers';
 import { Subject, takeUntil } from 'rxjs';
 import { DeviceInteractionService } from '../../../../services/device-interaction.service';
 
@@ -49,13 +48,15 @@ export class DeviceMapService {
     this.deckMapService.updateLayer(iconLayer);
   }
 
-  private transformDeviceToDeckMapData(device: Device) {
+  private transformDeviceToDeckMapData(device: Device): DeckMapData {
     return {
       id: device.id,
       position: device.position,
       name: device.name,
       type: device.type,
       path: device.path,
+      updatedAt: device.updatedAt,
+      status: device.status
     }
   }
 

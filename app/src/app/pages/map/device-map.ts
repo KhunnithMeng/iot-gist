@@ -8,10 +8,13 @@ import {
 import { DeviceMapService } from './device-map.service';
 import { DeviceService } from '../../../../services/device.service';
 import { Device } from '../../../../models/device.model';
+import { DeviceInfoSidebar } from '../device-info-sidebar/device-info-sidebar';
 
 @Component({
   selector: 'app-map',
-  imports: [],
+  imports: [
+    DeviceInfoSidebar
+  ],
   standalone: true,
   templateUrl: './device-map.html',
   styleUrl: './device-map.scss',

@@ -3,5 +3,7 @@ export interface Device {
   position: [number, number] // [longitude, latitude]
   name: string,
   type: 'bus' | 'vessel' | 'car',
-  path: [number, number][]
+  status: 'active' | 'offline' | 'idle',
+  path: [number, number][],
+  updatedAt: number
 }

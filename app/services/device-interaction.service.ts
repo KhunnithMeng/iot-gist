@@ -3,6 +3,7 @@ import { DeckMapData } from '../models/deck-map-data';
 import { PathLayer } from '@deck.gl/layers';
 import { DeckMapService } from './deck-map.service';
 import { DeckMapLayerService } from './deck-map-layer.service';
+import { DeviceInfoDisplayStateService } from './device-info-display-state.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,9 +11,19 @@ import { DeckMapLayerService } from './deck-map-layer.service';
 export class DeviceInteractionService {
 
   constructor(private deckMapService: DeckMapService,
+              private deviceDisplayInfoStateService: DeviceInfoDisplayStateService,
               private deckMapLayerService: DeckMapLayerService) {
   }
   public clickDevice(data: DeckMapData) {
+    this.toggleDeviceHistoryPath(data);
+    this.displaySideBar(data);
+  }
+
+  private displaySideBar(data: DeckMapData) {
+    this.deviceDisplayInfoStateService.displayInfo(data);
+  }
+
+  private toggleDeviceHistoryPath(data: DeckMapData) {
     const previousPathLayer: PathLayer = this.deckMapService.getLayer('path-layer');
     const previousSelectedData = previousPathLayer.props.data as DeckMapData[];
     let pathLayer: PathLayer;

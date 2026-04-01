@@ -1,0 +1,31 @@
+<div class="sidebar" [class.open]="selectedDevice">
+
+  <button class="close-btn" (click)="closeDevice()">✕</button>
+  @if (selectedDevice) {
+
+    <h2 class="device-name">{{ selectedDevice.name }}</h2>
+
+    <div class="info-row">
+      <span class="label">Status</span>
+      <span class="status-badge" [class]="selectedDevice.status">
+        {{ selectedDevice.status | titlecase }}
+      </span>
+    </div>
+
+    <div class="info-row">
+      <span class="label">Coordinates</span>
+      <span class="value">
+        {{ selectedDevice.position[1].toFixed(4) }},
+        {{ selectedDevice.position[0].toFixed(4) }}
+      </span>
+    </div>
+
+    <div class="info-row">
+      <span class="label">Last Seen</span>
+      <span class="value">
+        {{ selectedDevice.updatedAt | date: 'dd MMM yyyy, HH:mm' }}
+      </span>
+    </div>
+
+  }
+</div>
