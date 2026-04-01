@@ -4,6 +4,7 @@ import { PathLayer } from '@deck.gl/layers';
 import { DeckMapService } from './deck-map.service';
 import { DeckMapLayerService } from './deck-map-layer.service';
 import { DeviceInfoDisplayStateService } from './device-info-display-state.service';
+import { DeviceService } from './device.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ export class DeviceInteractionService {
 
   constructor(private deckMapService: DeckMapService,
               private deviceDisplayInfoStateService: DeviceInfoDisplayStateService,
+              private deviceService: DeviceService,
               private deckMapLayerService: DeckMapLayerService) {
   }
   public clickDevice(data: DeckMapData) {
@@ -26,13 +28,20 @@ export class DeviceInteractionService {
   private toggleDeviceHistoryPath(data: DeckMapData) {
     const previousPathLayer: PathLayer = this.deckMapService.getLayer('path-layer');
     const previousSelectedData = previousPathLayer.props.data as DeckMapData[];
-    let pathLayer: PathLayer;
     if (previousSelectedData?.length > 0 && previousSelectedData[0].id === data.id) {
-      pathLayer = this.deckMapLayerService.createPathLayer();
+      const pathLayer = this.deckMapLayerService.createPathLayer();
+      this.deckMapService.updateLayer(pathLayer);
     } else {
-      pathLayer = this.deckMapLayerService.createPathLayer([ data ]);
+      this.deviceService.getHistory(data.id).subscribe(data => {
+        if (data) {
+          const pathLayer = this.deckMapLayerService.createPathLayer([ data as DeckMapData ]);
+          this.deckMapService.updateLayer(pathLayer);
+        } else {
+          const pathLayer = this.deckMapLayerService.createPathLayer();
+          this.deckMapService.updateLayer(pathLayer);
+        }
+      });
     }
-    this.deckMapService.updateLayer(pathLayer);
   }
 
   public hoverDevice(data: DeckMapData) {
