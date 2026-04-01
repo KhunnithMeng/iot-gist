@@ -5,6 +5,7 @@ import { GPSDevice, GPSPosition } from '../models/GPS-Position';
 // @ts-ignore
 import { HttpClient } from '@angular/common/http';
 import { GPSHistory, GPSHistoryDevice } from '../models/GPS-History';
+import { DeckMapPath } from '../models/deck-map';
 @Injectable({
   providedIn: 'root',
 })
@@ -23,18 +24,15 @@ export class DeviceService {
       .pipe(map(this.transformGPSHistoryToDevice.bind(this)))
   }
 
-  private transformGPSHistoryToDevice(gpsHistory: GPSHistory): Device | null {
+  private transformGPSHistoryToDevice(gpsHistory: GPSHistory): DeckMapPath<Device> | null {
     if (!gpsHistory || !gpsHistory.device || gpsHistory.device.path.length === 0) return null;
     const device: GPSHistoryDevice = gpsHistory.device;
     return {
       id: device.id,
       position: device.position,
-      name: device.deviceName,
-      type: device.type,
       path: device.path,
-      updatedAt: device.updatedAt,
-      status: device.status
-    }
+      data: { ...device, name: device.deviceName }
+    } as DeckMapPath<Device>
   }
 
   private transformGPSPositionToDevice(gpsPosition: GPSPosition): Device[] {

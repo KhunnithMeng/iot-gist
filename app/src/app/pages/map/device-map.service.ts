@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { DeckMapService } from '../../../../services/deck-map.service';
 import { DeckMapLayerService } from '../../../../services/deck-map-layer.service';
-import { DeckMapData } from '../../../../models/deck-map-data';
 import { Device } from '../../../../models/device.model';
 import { Subject, takeUntil } from 'rxjs';
 import { DeviceInteractionService } from '../../../../services/device-interaction.service';
+import { DeckMapIcon } from '../../../../models/deck-map';
+import { MAP_ICONS } from './map-icons';
 
 @Injectable({
   providedIn: 'root',
@@ -43,21 +44,18 @@ export class DeviceMapService {
 
   public updateDevice(devices: Device[]) {
     if (!devices) return;
-    const data: DeckMapData[] = devices?.map(this.transformDeviceToDeckMapData.bind(this));
-    const iconLayer = this.deckMapLayerService.createIconLayer(data);
+    const data: DeckMapIcon<Device>[] = devices.map(this.transformDeviceToDeckMapData.bind(this));
+    const iconLayer = this.deckMapLayerService.createIconLayer<Device>(data);
     this.deckMapService.updateLayer(iconLayer);
   }
 
-  private transformDeviceToDeckMapData(device: Device): DeckMapData {
+  private transformDeviceToDeckMapData(device: Device): DeckMapIcon<Device> {
     return {
       id: device.id,
+      svg: MAP_ICONS[device.type],
       position: device.position,
-      name: device.name,
-      type: device.type,
-      path: device.path,
-      updatedAt: device.updatedAt,
-      status: device.status
-    }
+      data: device
+    } as DeckMapIcon<Device>
   }
 
   public clear() {

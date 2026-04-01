@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { DeckMapData } from '../models/deck-map-data';
+import { DeckMapIcon } from '../models/deck-map';
+import { Device } from '../models/device.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeviceInfoDisplayStateService {
-  private displayInformationState: Subject<DeckMapData | null> = new Subject<DeckMapData | null>();
+  private displayInformationState: Subject<DeckMapIcon<Device> | null> = new Subject<DeckMapIcon<Device> | null>();
   displayDeviceInfoDetection$ = this.displayInformationState.asObservable();
 
-  public displayInfo(data: DeckMapData) {
+  public displayInfo(data: DeckMapIcon<Device>) {
     this.displayInformationState.next(data);
   }
 
