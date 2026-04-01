@@ -95,7 +95,7 @@
   font-size: 12px;
   font-weight: 600;
 
-  &.active  { background: #e0f7e9; color: #1a7a3c; }
+  &.online  { background: #e0f7e9; color: #1a7a3c; }
   &.idle    { background: #fff3e0; color: #b36200; }
   &.offline { background: #f0f0f0; color: #666;    }
 }
