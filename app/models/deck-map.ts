@@ -11,3 +11,4 @@ export interface DeckMapPath<T> {
   path: [number, number][], // [longitude, latitude][]
   data: T
 }
+
