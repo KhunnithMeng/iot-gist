@@ -28,14 +28,15 @@ export class DeviceInfoSidebar implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.deviceInfoDisplayStateService.displayDeviceInfoDetection$.subscribe(res => {
-      if (!res) {
-        this.selectedDevice = null;
-        return;
-      }
-      this.selectedDevice = { ...res } as Device;
-      this.cdr.detectChanges();
-    })
+    this.subscription = this.deviceInfoDisplayStateService
+      .displayDeviceInfoDetection$.subscribe(res => {
+        if (!res) {
+          this.selectedDevice = null;
+          return;
+        }
+        this.selectedDevice = { ...res.data };
+        this.cdr.detectChanges();
+      });
   }
 
   ngOnDestroy(): void {
