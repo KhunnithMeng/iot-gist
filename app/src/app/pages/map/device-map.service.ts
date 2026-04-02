@@ -56,8 +56,11 @@ export class DeviceMapService {
     if (selectedDevice) {
       this.deviceService.getHistory(selectedDevice.id)
         .pipe(takeUntil(this.subscriptionSignal))
-        .subscribe(res => {
-          const pathLayer = this.deckMapLayerService.createPathLayer([ res as DeckMapPath<Device> ]);
+        .subscribe(data => {
+          let pathLayer = this.deckMapLayerService.createPathLayer();
+          if (data) {
+            pathLayer = this.deckMapLayerService.createPathLayer([ data as DeckMapPath<Device> ]);
+          }
           this.deckMapService.updateLayer(pathLayer);
         });
     } else {

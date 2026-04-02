@@ -36,7 +36,10 @@ export class DeviceInteractionService {
     const device = this.deviceDisplayInfoStateService.getLatestDevice();
     if (device) {
       this.deviceService.getHistory(device.id).subscribe(res => {
-        const pathLayer = this.deckMapLayerService.createPathLayer([res as DeckMapPath<any>]);
+        let pathLayer = this.deckMapLayerService.createPathLayer();
+        if (res) {
+          pathLayer = this.deckMapLayerService.createPathLayer([res as DeckMapPath<any>]);
+        }
         this.deckMapService.updateLayer(pathLayer);
       });
     }
