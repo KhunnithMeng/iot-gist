@@ -32,7 +32,7 @@ export class DeviceMap implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.mapService.initializeMap(this.mapContainerRef.nativeElement);
     this.fetchDevices();
-    this.subscription = interval(10000).subscribe(res => {
+    this.subscription = interval(5000).subscribe(res => {
       this.fetchDevices();
     });
   }
