@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { DeckMapIcon } from '../models/deck-map';
 import { Device } from '../models/device.model';
 
@@ -7,7 +7,7 @@ import { Device } from '../models/device.model';
   providedIn: 'root',
 })
 export class DeviceInfoDisplayStateService {
-  private displayInformationState: Subject<DeckMapIcon<Device> | null> = new Subject<DeckMapIcon<Device> | null>();
+  private displayInformationState: BehaviorSubject<DeckMapIcon<Device> | null> = new BehaviorSubject<DeckMapIcon<Device> | null>(null);
   displayDeviceInfoDetection$ = this.displayInformationState.asObservable();
 
   public displayInfo(data: DeckMapIcon<Device>) {
@@ -16,6 +16,10 @@ export class DeviceInfoDisplayStateService {
 
   public closeInfo() {
     this.displayInformationState.next(null);
+  }
+
+  public getLatestDevice() {
+    return this.displayInformationState.getValue();
   }
 
 }

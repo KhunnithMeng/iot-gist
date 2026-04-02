@@ -23,7 +23,12 @@ export class DeviceInteractionService {
   }
 
   private displaySideBar(data: DeckMapIcon<Device>) {
-    this.deviceDisplayInfoStateService.displayInfo(data);
+    const device = this.deviceDisplayInfoStateService.getLatestDevice();
+    if (device?.id === data?.id) {
+      this.deviceDisplayInfoStateService.closeInfo();
+    } else {
+      this.deviceDisplayInfoStateService.displayInfo(data)
+    }
   }
 
   private toggleDeviceHistoryPath(data: DeckMapIcon<Device>) {
