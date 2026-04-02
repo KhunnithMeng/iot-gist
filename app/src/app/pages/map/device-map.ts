@@ -31,11 +31,16 @@ export class DeviceMap implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.mapService.initializeMap(this.mapContainerRef.nativeElement);
+    this.fetchDevices();
     this.subscription = interval(10000).subscribe(res => {
-      this.deviceService.getDevices().subscribe((devices: Device[]) => {
-        this.mapService.updateDevice(devices);
-      })
+      this.fetchDevices();
     });
+  }
+
+  private fetchDevices() {
+    this.deviceService.getDevices().subscribe((devices: Device[]) => {
+      this.mapService.updateDevice(devices);
+    })
   }
 
   ngOnDestroy() {
