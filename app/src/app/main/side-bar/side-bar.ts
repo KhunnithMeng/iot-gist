@@ -11,7 +11,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class SideBar {
 
   navItem = signal([
-    { name: 'Dashboard', url: '/dashboard', section: 'Overview' },
-    { name: 'Audit Log', url: '/log', section: null },
+    { name: 'Dashboard', url: '/dashboard', section: 'Overview' }
   ]);
 }
