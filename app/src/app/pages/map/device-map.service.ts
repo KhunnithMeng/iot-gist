@@ -4,8 +4,10 @@ import { DeckMapLayerService } from '../../../../services/deck-map-layer.service
 import { Device } from '../../../../models/device.model';
 import { Subject, takeUntil } from 'rxjs';
 import { DeviceInteractionService } from '../../../../services/device-interaction.service';
-import { DeckMapIcon } from '../../../../models/deck-map';
+import { DeckMapIcon, DeckMapPath } from '../../../../models/deck-map';
 import { MAP_ICONS } from './map-icons';
+import { DeviceInfoDisplayStateService } from '../../../../services/device-info-display-state.service';
+import { DeviceService } from '../../../../services/device.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +17,8 @@ export class DeviceMapService {
 
   constructor(private deckMapService: DeckMapService,
               private deviceInteractionService: DeviceInteractionService,
+              private deviceInfoDisplayService: DeviceInfoDisplayStateService,
+              private deviceService: DeviceService,
               private deckMapLayerService: DeckMapLayerService) {}
 
   public initializeMap(mapContainer: HTMLDivElement) {
@@ -47,6 +51,19 @@ export class DeviceMapService {
     const data: DeckMapIcon<Device>[] = devices.map(this.transformDeviceToDeckMapData.bind(this));
     const iconLayer = this.deckMapLayerService.createIconLayer<Device>(data);
     this.deckMapService.updateLayer(iconLayer);
+
+    const selectedDevice = this.deviceInfoDisplayService.getLatestDevice();
+    if (selectedDevice) {
+      this.deviceService.getHistory(selectedDevice.id)
+        .pipe(takeUntil(this.subscriptionSignal))
+        .subscribe(res => {
+          const pathLayer = this.deckMapLayerService.createPathLayer([ res as DeckMapPath<Device> ]);
+          this.deckMapService.updateLayer(pathLayer);
+        });
+    } else {
+      const pathLayer = this.deckMapLayerService.createPathLayer();
+      this.deckMapService.updateLayer(pathLayer);
+    }
   }
 
   private transformDeviceToDeckMapData(device: Device): DeckMapIcon<Device> {

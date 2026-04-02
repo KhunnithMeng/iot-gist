@@ -18,7 +18,6 @@ export class DeviceInteractionService {
               private deckMapLayerService: DeckMapLayerService) {
   }
   public clickDevice(data: DeckMapIcon<Device>) {
-    this.toggleDeviceHistoryPath(data);
     this.displaySideBar(data);
   }
 
@@ -26,27 +25,28 @@ export class DeviceInteractionService {
     const device = this.deviceDisplayInfoStateService.getLatestDevice();
     if (device?.id === data?.id) {
       this.deviceDisplayInfoStateService.closeInfo();
+      this.hideDeviceHistoryPath()
     } else {
       this.deviceDisplayInfoStateService.displayInfo(data)
+      this.displayHistoryPath();
     }
   }
 
-  private toggleDeviceHistoryPath(data: DeckMapIcon<Device>) {
-    const previousPathLayer: PathLayer = this.deckMapService.getLayer('path-layer');
-    const previousSelectedData = previousPathLayer.props.data as DeckMapPath<Device>[];
-    if (previousSelectedData?.length > 0 && previousSelectedData[0].id === data.id) {
+  private displayHistoryPath() {
+    const device = this.deviceDisplayInfoStateService.getLatestDevice();
+    if (device) {
+      this.deviceService.getHistory(device.id).subscribe(res => {
+        const pathLayer = this.deckMapLayerService.createPathLayer([res as DeckMapPath<any>]);
+        this.deckMapService.updateLayer(pathLayer);
+      });
+    }
+  }
+
+  private hideDeviceHistoryPath() {
+    const device = this.deviceDisplayInfoStateService.getLatestDevice();
+    if (!device) {
       const pathLayer = this.deckMapLayerService.createPathLayer();
       this.deckMapService.updateLayer(pathLayer);
-    } else {
-      this.deviceService.getHistory(data.id).subscribe(data => {
-        if (data) {
-          const pathLayer = this.deckMapLayerService.createPathLayer([ data as DeckMapPath<Device> ]);
-          this.deckMapService.updateLayer(pathLayer);
-        } else {
-          const pathLayer = this.deckMapLayerService.createPathLayer();
-          this.deckMapService.updateLayer(pathLayer);
-        }
-      });
     }
   }
 
