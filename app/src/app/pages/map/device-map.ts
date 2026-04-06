@@ -9,7 +9,9 @@ import { DeviceMapService } from './device-map.service';
 import { DeviceService } from '../../../../services/device.service';
 import { Device } from '../../../../models/device.model';
 import { DeviceInfoSidebar } from '../device-info-sidebar/device-info-sidebar';
-import { interval, Subscription } from 'rxjs';
+import { interval, map, Subscription } from 'rxjs';
+import { DeviceSocketService } from '../../../../services/device-socket-service';
+import { DeckMapData } from '../../../../models/deck-map';
 
 @Component({
   selector: 'app-map',
@@ -26,25 +28,21 @@ export class DeviceMap implements AfterViewInit, OnDestroy {
   subscription!: Subscription;
 
   constructor(private mapService: DeviceMapService,
-              private deviceService: DeviceService) {
+              private deviceSocketService: DeviceSocketService) {
   }
 
   ngAfterViewInit(): void {
     this.mapService.initializeMap(this.mapContainerRef.nativeElement);
-    this.fetchDevices();
-    this.subscription = interval(5000).subscribe(res => {
-      this.fetchDevices();
-    });
-  }
-
-  private fetchDevices() {
-    this.deviceService.getDevices().subscribe((devices: Device[]) => {
-      this.mapService.updateDevice(devices);
-    })
+    this.subscription = this.deviceSocketService.listen()
+      .pipe(map(res => res.data))
+      .subscribe((mapDeckDataList: DeckMapData<Device>[]) => {
+        this.mapService.updateDevice(mapDeckDataList);
+      });
   }
 
   ngOnDestroy() {
     this.mapService.clear();
     this.subscription?.unsubscribe();
+    this.deviceSocketService.disconnect();
   }
 }

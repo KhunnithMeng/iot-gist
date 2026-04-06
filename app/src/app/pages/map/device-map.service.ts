@@ -4,10 +4,11 @@ import { DeckMapLayerService } from '../../../../services/deck-map-layer.service
 import { Device } from '../../../../models/device.model';
 import { Subject, takeUntil } from 'rxjs';
 import { DeviceInteractionService } from '../../../../services/device-interaction.service';
-import { DeckMapIcon, DeckMapPath } from '../../../../models/deck-map';
+import { DeckMapData, DeckMapIcon, DeckMapPath } from '../../../../models/deck-map';
 import { MAP_ICONS } from './map-icons';
 import { DeviceInfoDisplayStateService } from '../../../../services/device-info-display-state.service';
 import { DeviceService } from '../../../../services/device.service';
+import { IconLayer } from '@deck.gl/layers';
 
 @Injectable({
   providedIn: 'root',
@@ -46,27 +47,11 @@ export class DeviceMapService {
     this.deckMapService.addLayer(pathLayer);
   }
 
-  public updateDevice(devices: Device[]) {
-    if (!devices) return;
-    const data: DeckMapIcon<Device>[] = devices.map(this.transformDeviceToDeckMapData.bind(this));
-    const iconLayer = this.deckMapLayerService.createIconLayer<Device>(data);
-    this.deckMapService.updateLayer(iconLayer);
+  public updateDevice(deckMapDataList: DeckMapData<Device>[]) {
+    if (!deckMapDataList || deckMapDataList.length === 0) return;
 
-    const selectedDevice = this.deviceInfoDisplayService.getLatestDevice();
-    if (selectedDevice) {
-      this.deviceService.getHistory(selectedDevice.id)
-        .pipe(takeUntil(this.subscriptionSignal))
-        .subscribe(data => {
-          let pathLayer = this.deckMapLayerService.createPathLayer();
-          if (data) {
-            pathLayer = this.deckMapLayerService.createPathLayer([ data as DeckMapPath<Device> ]);
-          }
-          this.deckMapService.updateLayer(pathLayer);
-        });
-    } else {
-      const pathLayer = this.deckMapLayerService.createPathLayer();
-      this.deckMapService.updateLayer(pathLayer);
-    }
+    const iconLayer = this.deckMapLayerService.createIconLayer(deckMapDataList);
+    this.deckMapService.updateLayer(iconLayer);
   }
 
   private transformDeviceToDeckMapData(device: Device): DeckMapIcon<Device> {

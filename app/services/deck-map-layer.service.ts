@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IconLayer, PathLayer } from '@deck.gl/layers';
 import { Observable, Subject } from 'rxjs';
-import { DeckMapIcon, DeckMapPath } from '../models/deck-map';
+import { DeckMapData, DeckMapIcon, DeckMapPath } from '../models/deck-map';
 import { LayerDataSource } from '@deck.gl/core';
 import { Device } from '../models/device.model';
 
@@ -19,26 +19,26 @@ export class DeckMapLayerService {
   /**
    * Create icon layer with configuration for handling markers
    */
-  public createIconLayer<T>(deskMapIcon?: DeckMapIcon<T>[]): IconLayer {
-    return new IconLayer({
-      id: 'icon-layer',
-      data: (deskMapIcon || []) as LayerDataSource<DeckMapIcon<T>>,
+    public createIconLayer<T>(deckMapDataList?: DeckMapData<T>[]): IconLayer {
+      return new IconLayer({
+        id: 'icon-layer',
+        data: (deckMapDataList || []) as LayerDataSource<DeckMapIcon<T>>,
 
-      getIcon: (d: DeckMapIcon<T>) => ({
-        url: d.svg,
-        width: 64,
-        height: 64,
-        anchorY: 32
-      }),
+        getIcon: (d: DeckMapData<T>) => ({
+          url: d.map.svg ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(d.map.svg)}` : '',
+          width: 64,
+          height: 64,
+          anchorY: 32
+        }),
 
-      getPosition: (d: DeckMapIcon<T>) => d.position,
-      getSize: 20,
-      pickable: true,
+        getPosition: (d: DeckMapData<T>) => d.map.position || [],
+        getSize: 20,
+        pickable: true,
 
-      onClick: ({ object }) => this.iconClick.next(object),
-      onHover: ({ object }) => this.iconHover.next(object)
-    })
-  }
+        onClick: ({ object }) => this.iconClick.next(object),
+        onHover: ({ object }) => this.iconHover.next(object)
+      })
+    }
 
   /**
    * Create path layer with configuration for handling track line
