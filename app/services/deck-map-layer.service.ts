@@ -43,7 +43,7 @@ export class DeckMapLayerService {
   /**
    * Create path layer with configuration for handling track line
    */
-  public createPathLayer(data?: DeckMapPath<Device>[]): PathLayer {
+  public createPathLayer(data?: DeckMapData<Device>[]): PathLayer {
     return new PathLayer({
       id: 'path-layer',
       data: data || [],

@@ -4,11 +4,7 @@ import { DeckMapLayerService } from '../../../../services/deck-map-layer.service
 import { Device } from '../../../../models/device.model';
 import { Subject, takeUntil } from 'rxjs';
 import { DeviceInteractionService } from '../../../../services/device-interaction.service';
-import { DeckMapData, DeckMapIcon, DeckMapPath } from '../../../../models/deck-map';
-import { MAP_ICONS } from './map-icons';
-import { DeviceInfoDisplayStateService } from '../../../../services/device-info-display-state.service';
-import { DeviceService } from '../../../../services/device.service';
-import { IconLayer } from '@deck.gl/layers';
+import { DeckMapData } from '../../../../models/deck-map';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +14,6 @@ export class DeviceMapService {
 
   constructor(private deckMapService: DeckMapService,
               private deviceInteractionService: DeviceInteractionService,
-              private deviceInfoDisplayService: DeviceInfoDisplayStateService,
-              private deviceService: DeviceService,
               private deckMapLayerService: DeckMapLayerService) {}
 
   public initializeMap(mapContainer: HTMLDivElement) {
@@ -50,17 +44,17 @@ export class DeviceMapService {
   public updateDevice(deckMapDataList: DeckMapData<Device>[]) {
     if (!deckMapDataList || deckMapDataList.length === 0) return;
 
-    const iconLayer = this.deckMapLayerService.createIconLayer(deckMapDataList);
-    this.deckMapService.updateLayer(iconLayer);
-  }
+    const hasIcon: boolean = deckMapDataList.some(deckMapData => deckMapData.map.svg && deckMapData.map.svg.length > 0);
+    if (hasIcon) {
+      const iconLayer = this.deckMapLayerService.createIconLayer(deckMapDataList);
+      this.deckMapService.addLayer(iconLayer);
+    }
 
-  private transformDeviceToDeckMapData(device: Device): DeckMapIcon<Device> {
-    return {
-      id: device.id,
-      svg: MAP_ICONS[device.type],
-      position: device.position,
-      data: device
-    } as DeckMapIcon<Device>
+    const hasPath: boolean = deckMapDataList.some(deckMapData => deckMapData.map.path && deckMapData.map.path.length > 0);
+    if (hasPath) {
+      const pathLayer = this.deckMapLayerService.createPathLayer(deckMapDataList);
+      this.deckMapService.addLayer(pathLayer);
+    }
   }
 
   public clear() {

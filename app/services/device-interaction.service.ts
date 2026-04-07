@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PathLayer } from '@deck.gl/layers';
 import { DeckMapService } from './deck-map.service';
-import { DeckMapLayerService } from './deck-map-layer.service';
 import { DeviceInfoDisplayStateService } from './device-info-display-state.service';
-import { DeviceService } from './device.service';
-import { DeckMapIcon, DeckMapPath } from '../models/deck-map';
+import { DeckMapIcon } from '../models/deck-map';
 import { Device } from '../models/device.model';
 
 @Injectable({
@@ -13,9 +10,7 @@ import { Device } from '../models/device.model';
 export class DeviceInteractionService {
 
   constructor(private deckMapService: DeckMapService,
-              private deviceDisplayInfoStateService: DeviceInfoDisplayStateService,
-              private deviceService: DeviceService,
-              private deckMapLayerService: DeckMapLayerService) {
+              private deviceDisplayInfoStateService: DeviceInfoDisplayStateService) {
   }
   public clickDevice(data: DeckMapIcon<Device>) {
     this.displaySideBar(data);
@@ -33,24 +28,11 @@ export class DeviceInteractionService {
   }
 
   private displayHistoryPath() {
-    const device = this.deviceDisplayInfoStateService.getLatestDevice();
-    if (device) {
-      this.deviceService.getHistory(device.id).subscribe(res => {
-        let pathLayer = this.deckMapLayerService.createPathLayer();
-        if (res) {
-          pathLayer = this.deckMapLayerService.createPathLayer([res as DeckMapPath<any>]);
-        }
-        this.deckMapService.updateLayer(pathLayer);
-      });
-    }
+    console.log('display history path');
   }
 
   private hideDeviceHistoryPath() {
-    const device = this.deviceDisplayInfoStateService.getLatestDevice();
-    if (!device) {
-      const pathLayer = this.deckMapLayerService.createPathLayer();
-      this.deckMapService.updateLayer(pathLayer);
-    }
+    console.log('hide device history path');
   }
 
   public hoverDevice(data: DeckMapIcon<Device>) {
