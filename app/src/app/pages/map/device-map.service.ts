@@ -1,27 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { DeckMapService } from '../../../../services/deck-map.service';
 import { DeckMapLayerService } from '../../../../services/deck-map-layer.service';
 import { Device } from '../../../../models/device.model';
 import { Subject, takeUntil } from 'rxjs';
 import { DeviceInteractionService } from '../../../../services/device-interaction.service';
 import { DeckMapData } from '../../../../models/deck-map';
-import { PathLayerHandlerService } from '../../../../services/deck-layer-handlers/path-layer-handler.service';
-import { IconLayerHandlerService } from '../../../../services/deck-layer-handlers/icon-layer-handler.service';
 import { DeckLayerHandler } from '../../../../models/deck-layer-handler';
+import { DECK_LAYER_HANDLERS } from '../../../../tokens/deck-layer-handlers.token';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class DeviceMapService {
   private subscriptionSignal: Subject<void> = new Subject();
-  private readonly handlers: DeckLayerHandler<Device>[] = [];
 
   constructor(private deckMapService: DeckMapService,
               private deviceInteractionService: DeviceInteractionService,
-              private pathLayerHandlerService: PathLayerHandlerService,
-              private iconLayerHandlerService: IconLayerHandlerService,
-              private deckMapLayerService: DeckMapLayerService) {
-    this.handlers = [this.pathLayerHandlerService, this.iconLayerHandlerService]
+              private deckMapLayerService: DeckMapLayerService,
+              @Inject(DECK_LAYER_HANDLERS) private handlers: DeckLayerHandler<Device>[]) {
   }
 
   public initializeMap(mapContainer: HTMLDivElement) {
