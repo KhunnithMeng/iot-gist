@@ -35,7 +35,7 @@ export class DeviceInfoSidebar implements OnInit, OnDestroy {
           this.cdr.detectChanges();
           return;
         }
-        this.selectedDevice = { ...res.data };
+        this.selectedDevice = { ...res.info };
         this.cdr.detectChanges();
       });
   }

@@ -41,6 +41,9 @@ export class DeviceMapService {
       if (handler.shouldHandle(deckMapDataList)) {
         const layer = handler.createLayer(deckMapDataList);
         this.deckMapService.addLayer(layer);
+      } else {
+        const layer = handler.createLayer([]);
+        this.deckMapService.updateLayer(layer);
       }
     }
   }

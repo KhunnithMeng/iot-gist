@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DeckMapService } from './deck-map.service';
 import { DeviceInfoDisplayStateService } from './device-info-display-state.service';
-import { DeckMapIcon } from '../models/deck-map';
+import { DeckMapData } from '../models/deck-map';
 import { Device } from '../models/device.model';
+import { DeckLayerStateService } from './deck-layer-state.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,32 +11,33 @@ import { Device } from '../models/device.model';
 export class DeviceInteractionService {
 
   constructor(private deckMapService: DeckMapService,
+              private deckLayerStateService: DeckLayerStateService<Device>,
               private deviceDisplayInfoStateService: DeviceInfoDisplayStateService) {
   }
-  public clickDevice(data: DeckMapIcon<Device>) {
+  public clickDevice(data: DeckMapData<Device>) {
     this.displaySideBar(data);
   }
 
-  private displaySideBar(data: DeckMapIcon<Device>) {
+  private displaySideBar(data: DeckMapData<Device>) {
     const device = this.deviceDisplayInfoStateService.getLatestDevice();
-    if (device?.id === data?.id) {
+    if (device?.map.id === data?.map.id) {
       this.deviceDisplayInfoStateService.closeInfo();
       this.hideDeviceHistoryPath()
     } else {
       this.deviceDisplayInfoStateService.displayInfo(data)
-      this.displayHistoryPath();
+      this.displayHistoryPath(data);
     }
   }
 
-  private displayHistoryPath() {
-    console.log('display history path');
+  private displayHistoryPath(deckMapData: DeckMapData<Device>) {
+    this.deckLayerStateService.displayPathLine(deckMapData)
   }
 
   private hideDeviceHistoryPath() {
-    console.log('hide device history path');
+    this.deckLayerStateService.hidePathLine();
   }
 
-  public hoverDevice(data: DeckMapIcon<Device>) {
+  public hoverDevice(data: DeckMapData<Device>) {
     const map = this.deckMapService.getMap();
     map.getCanvas().style.cursor = data ? 'pointer' : 'default';
   }

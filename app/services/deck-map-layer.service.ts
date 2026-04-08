@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
 import { IconLayer, PathLayer } from '@deck.gl/layers';
 import { Observable, Subject } from 'rxjs';
-import { DeckMapData, DeckMapIcon, DeckMapPath } from '../models/deck-map';
+import { DeckMapData, DeckMapIcon } from '../models/deck-map';
 import { LayerDataSource } from '@deck.gl/core';
 import { Device } from '../models/device.model';
+import { MAP_ICONS } from '../src/app/pages/map/map-icons';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeckMapLayerService {
 
-  private iconClick: Subject<DeckMapIcon<Device>> = new Subject<DeckMapIcon<Device>>();
-  public clickIcon$: Observable<DeckMapIcon<Device>> = this.iconClick.asObservable();
+  private iconClick: Subject<DeckMapData<Device>> = new Subject<DeckMapData<Device>>();
+  public clickIcon$: Observable<DeckMapData<Device>> = this.iconClick.asObservable();
 
-  private iconHover: Subject<DeckMapIcon<Device>> = new Subject<DeckMapIcon<Device>>();
-  public hoverIcon$: Observable<DeckMapIcon<Device>> = this.iconHover.asObservable();
+  private iconHover: Subject<DeckMapData<Device>> = new Subject<DeckMapData<Device>>();
+  public hoverIcon$: Observable<DeckMapData<Device>> = this.iconHover.asObservable();
 
   /**
    * Create icon layer with configuration for handling markers
@@ -25,7 +26,7 @@ export class DeckMapLayerService {
         data: (deckMapDataList || []) as LayerDataSource<DeckMapIcon<T>>,
 
         getIcon: (d: DeckMapData<T>) => ({
-          url: d.map.svg ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(d.map.svg)}` : '',
+          url: d.map.svg ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(d.map.svg)}` : MAP_ICONS['car'],
           width: 64,
           height: 64,
           anchorY: 32
@@ -47,7 +48,7 @@ export class DeckMapLayerService {
     return new PathLayer({
       id: 'path-layer',
       data: data || [],
-      getPath: (d: DeckMapPath<Device>) => d.path,
+      getPath: (d: DeckMapData<Device>) => d.map.path,
       getColor: [255, 50, 50, 200],
       getWidth: 20,
       widthMinPixels: 2,
