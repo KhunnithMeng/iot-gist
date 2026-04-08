@@ -6,14 +6,12 @@ import {
   ViewChild
 } from '@angular/core';
 import { DeviceMapService } from './device-map.service';
-import { Device } from '../../../../models/device.model';
 import { DeviceInfoSidebar } from '../device-info-sidebar/device-info-sidebar';
-import { map, Subscription } from 'rxjs';
-import { DeviceSocketService } from '../../../../services/device-socket-service';
-import { DeckMapData } from '../../../../models/deck-map';
+import { Subscription } from 'rxjs';
 import { DECK_LAYER_HANDLERS } from '../../../../tokens/deck-layer-handlers.token';
 import { IconLayerHandlerService } from '../../../../services/deck-layer-handlers/icon-layer-handler.service';
 import { PathLayerHandlerService } from '../../../../services/deck-layer-handlers/path-layer-handler.service';
+import { DeviceAdapterService } from '../../../../services/device-adapter.service';
 
 @Component({
   selector: 'app-map',
@@ -43,21 +41,18 @@ export class DeviceMap implements AfterViewInit, OnDestroy {
   subscription!: Subscription;
 
   constructor(private mapService: DeviceMapService,
-              private deviceSocketService: DeviceSocketService) {
+              private deviceAdapterService: DeviceAdapterService) {
   }
 
   ngAfterViewInit(): void {
     this.mapService.initializeMap(this.mapContainerRef.nativeElement);
-    this.subscription = this.deviceSocketService.listen()
-      .pipe(map(res => res.data))
-      .subscribe((mapDeckDataList: DeckMapData<Device>[]) => {
-        this.mapService.updateDevice(mapDeckDataList);
-      });
+    this.subscription = this.deviceAdapterService.getDevices().subscribe(data => {
+      this.mapService.updateDevice(data)
+    })
   }
 
   ngOnDestroy() {
     this.mapService.clear();
     this.subscription?.unsubscribe();
-    this.deviceSocketService.disconnect();
   }
 }
